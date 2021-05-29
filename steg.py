@@ -50,6 +50,7 @@ class Steganography:
         msg = list(msg)
         # print(msg)
 
+
         # Converts the message to ASCII and stores in msgAscii list
         msgAscii = [ord(i) for i in msg]
         msgBi = list()
@@ -58,6 +59,7 @@ class Steganography:
         # Converts the ASCII to Binary and appends to msgBi list
         for i in range(len(msgAscii)):
             binaryVal = bin(msgAscii[i]).replace("0b","")       # Gets Binary of the numbers
+            
             if len(binaryVal) < 8:
                 binaryVal = "0"*(8 - len(binaryVal)) + binaryVal
             msgBi.append(binaryVal)
@@ -70,8 +72,8 @@ class Steganography:
             msgBiDiv.append(msgBi[i][4:])
 
 
-        print(msgBi)
-        print(msgBiDiv)
+        # print(msgBi)
+        # print(msgBiDiv)
 
 
         # Put the vals in the img
@@ -90,16 +92,40 @@ class Steganography:
             # For Indication
             self.img.putpixel((i, 11), (0,0,0))
 
+        self.img.save(os.path.dirname(__file__)+"\\"+"file.png")
         self.img.show()
-        self.img.save(os.path.dirname(__file__)+"\\"+"file.jpg")
-        
 
-        # self.img.putpixel((10,10),(0,0,0))
+    def decode(self):
         # self.img.show()
 
+        # Get Pixel value in RGB and converts the Blue into binary and appends in list msg
+        msg = list()
+        for i in range(52):
+            pixel = self.img.getpixel((i,0))
+            msg.append(bin(pixel[2]).replace("0b",""))
+        
+        # Takes the last 4 bits from the list msg and puts in binDiv list
+        binDiv = [ msg[i][4:] for i in range(52) ]
+
+        # Takes x-1 and x, concates to form 8bits
+        binFull = [ binDiv[x-1]+binDiv[x] for x in range(1,len(binDiv),2) ]
+
+        # Converts the 8 bits to Characters
+        charAscii = [ chr(int(x,2)) for x in binFull ]
+
+        # Output String
+        op = ""
+        for i in range(len(charAscii)):
+            op = op + charAscii[i]
+
+        print(op)
+
+            
 
 
 
-s = Steganography("file.jpg")
-s.encode("abcdefghijklmnopqrstuvwxyz")
+s = Steganography("test.png")
+s.encode("Hello There ...!")
+
+s = Steganography("file.png")
 s.decode()
