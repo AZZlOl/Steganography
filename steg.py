@@ -1,6 +1,6 @@
 """
 
-Py Program for the Steganography Implimentation (naive Approach)
+    Py Program for the Steganography Implimentation (naive Approach)
 
 """
 import os
@@ -25,15 +25,15 @@ class Steganography:
         try:
             # Opens and displays stats for the img
             self.img = Image.open(self.fileLoc)
-            print("Image was opened successfully...\n")
-            print(":-: Image Stats :-:\n")
+            # print("Image was opened successfully...\n")
+            # print(":-: Image Stats :-:\n")
 
-            print("Size: {:.2f}".format( os.stat(self.fileLoc).st_size / (1024*1024) ) + "MBs")
-            print("Format: " + self.img.format)
+            # print("Size: {:.2f}".format( os.stat(self.fileLoc).st_size / (1024*1024) ) + "MBs")
+            # print("Format: " + self.img.format)
 
-            print("Resolution: " + str(self.img.size[0]) + " x " + str(self.img.size[1]))
+            # print("Resolution: " + str(self.img.size[0]) + " x " + str(self.img.size[1]))
 
-            print("\n\nPress any key to continue:\n")
+            # print("\n\nPress any key to continue:\n")
             # m.getch()
 
         except:
@@ -50,72 +50,141 @@ class Steganography:
         msg = list(msg)
         # print(msg)
 
+        # If the message is larger than img pixel count - 5
+        if len(msg) > (self.img.size[0] * self.img.size[1])-5:
+            print("Message is too long for this image")
+            exit()
+
+
+        
+        # Message Length to binary 5 chars
+        msgLen = bin(len(msg)).replace("0b","")     # Gets binary number
+        if len(msgLen) < 40:
+            msgLen = "0"*(40-len(msgLen)) + msgLen      # adds padding bits to make 40 chars
+        msgLen = " ".join(msgLen[i:i + 8] for i in range(0, len(msgLen), 8))        # Divides into 8 bits
+        msgLen = msgLen.split()
+        # print(msgLen)
+
+
 
         # Converts the message to ASCII and stores in msgAscii list
         msgAscii = [ord(i) for i in msg]
-        msgBi = list()
 
 
         # Converts the ASCII to Binary and appends to msgBi list
+        msgBi = list(msgLen)
+        # print(msgBi)
         for i in range(len(msgAscii)):
             binaryVal = bin(msgAscii[i]).replace("0b","")       # Gets Binary of the numbers
-            
+
             if len(binaryVal) < 8:
-                binaryVal = "0"*(8 - len(binaryVal)) + binaryVal
+                binaryVal = "0"*(8 - len(binaryVal)) + binaryVal    # padds to make 8 bits
             msgBi.append(binaryVal)
-
-
-        # Divides the binary into 2 parts and stores in msgBiDiv list
-        msgBiDiv = list()
-        for i in range(len(msgBi)):
-            msgBiDiv.append(msgBi[i][:4])
-            msgBiDiv.append(msgBi[i][4:])
-
-
         # print(msgBi)
-        # print(msgBiDiv)
 
 
-        # Put the vals in the img
-        for i in range(len(msgBiDiv)):
+        # Divides the binary into 3 parts of 2:3:3 and stores in 3 different list
+        r = list()
+        g = list()
+        b = list()
+        i = 0
 
-            # 2 Lines: Replaces the Blue value in binary
-            rgb = list(self.img.getpixel((i,0)))
-            rgb = [ rgb[0], rgb[1], bin(rgb[2]).replace("0b","") ]
+        for y in range(self.img.size[1]):
+            # Exit when the Original message length have been inserted
+            if i == len(msg):
+                break
+            # New List for every row of the img
+            r.append([])
+            g.append([])
+            b.append([])
 
-            # Merges the first 4 bits from the original and bits from the list msgBiDiv
-            newVal = int(rgb[2][:4] + msgBiDiv[i], 2)
+            for x in range(self.img.size[0]):
+                # Exit when the Original message length have been inserted
+                if i == len(msg):
+                    break
 
-            # Goes into the Picture
-            self.img.putpixel((i, 0), (rgb[0], rgb[1], newVal))
-            
-            # For Indication
-            self.img.putpixel((i, 11), (0,0,0))
+                # Append the bits into the specific sublists
+                r[y].append(msgBi[i][:2])
+                g[y].append(msgBi[i][2:5])
+                b[y].append(msgBi[i][5:])
+                i += 1
+
+
+
+        print(msgBi)
+        # print(r)
+        # print(g)
+        # print(b)
+
+
+        # Inserting the Bits into the pixels
+        i = 0
+        for y in range(self.img.size[1]):
+            # Exit when the Original message length have been inserted
+            if i == len(msg):
+                break
+
+            for x in range(self.img.size[0]):
+                # Exit when the Original message length have been inserted
+                if i == len(msg):
+                    break
+                
+
+                # Takes Pixel value, converts into binary
+                rgb = list(self.img.getpixel((x,y)))
+                rgbBi = [ bin(rgb[0]).replace("0b",""), bin(rgb[1]).replace("0b",""), bin(rgb[2]).replace("0b","") ]
+
+                # New Values are put in and converted into decimal
+                newR = int(rgbBi[0][:6] + r[y][x], 2)
+                newG = int(rgbBi[1][:5] + g[y][x], 2)
+                newB = int(rgbBi[2][:5] + b[y][x], 2)
+
+                self.img.putpixel((x,y),(newR, newG, newB))
+
+                # Append the bits into the specific sublists
+                i += 1
+
 
         self.img.save(os.path.dirname(__file__)+"\\"+"file.png")
-        self.img.show()
+        print("Image was saved at: "+str(os.path.dirname(__file__)+"\\"+"file.png"))
+        # self.img.show()
+        m.getch()
+
 
     def decode(self):
         # self.img.show()
 
-        # Get Pixel value in RGB and converts the Blue into binary and appends in list msg
-        msg = list()
-        for i in range(52):
-            pixel = self.img.getpixel((i,0))
-            msg.append(bin(pixel[2]).replace("0b",""))
-        
-        # Takes the last 4 bits from the list msg and puts in binDiv list
-        binDiv = [ msg[i][4:] for i in range(52) ]
+        # Get the length of the message
+        msgLen = ""
+        for i in range(5):
+            temp = self.img.getpixel((i,0))
+            msgLen = msgLen + bin(temp[0]).replace("0b","")[6:] + bin(temp[1]).replace("0b","")[5:] + bin(temp[2]).replace("0b","")[5:]
+        length = int(msgLen,2)
+        # print(length)
 
-        # Takes x-1 and x, concates to form 8bits
-        binFull = [ binDiv[x-1]+binDiv[x] for x in range(1,len(binDiv),2) ]
+        i = 0
+        msg = list()
+        for y in range(self.img.size[1]):
+            if i == length:
+                break
+            for x in range(self.img.size[0]):
+                if i == length:
+                    break
+                pixel = self.img.getpixel((x,y))
+                msg.append(bin(pixel[0]).replace("0b","")[6:] + bin(pixel[1]).replace("0b","")[5:] + bin(pixel[2]).replace("0b","")[5:])
+                i+=1
+        # print(msg)
+        
+        
 
         # Converts the 8 bits to Characters
-        charAscii = [ chr(int(x,2)) for x in binFull ]
+        charAscii = [ chr(int(x,2)) for x in msg ]
 
         # Output String
         op = ""
         for i in range(len(charAscii)):
+            if i < 5:
+                continue
             op = op + charAscii[i]
 
         print(op)
@@ -125,7 +194,7 @@ class Steganography:
 
 
 s = Steganography("test.png")
-s.encode("Hello There ...!")
+s.encode("Hellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo There")
 
 s = Steganography("file.png")
 s.decode()
