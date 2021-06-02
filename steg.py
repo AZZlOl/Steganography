@@ -25,16 +25,17 @@ class Steganography:
         try:
             # Opens and displays stats for the img
             self.img = Image.open(self.fileLoc)
-            # print("Image was opened successfully...\n")
-            # print(":-: Image Stats :-:\n")
+            print("Image was opened successfully...\n")
+            print(":-: Image Stats :-:\n")
 
-            # print("Size: {:.2f}".format( os.stat(self.fileLoc).st_size / (1024*1024) ) + "MBs")
-            # print("Format: " + self.img.format)
+            print("Size: {:.2f}".format( os.stat(self.fileLoc).st_size / (1024*1024) ) + "MBs")
+            print("Format: " + self.img.format)
 
-            # print("Resolution: " + str(self.img.size[0]) + " x " + str(self.img.size[1]))
+            print("Resolution: " + str(self.img.size[0]) + " x " + str(self.img.size[1]))
+            print("Total Characters that can be encoded: " + str((self.img.size[0]*self.img.size[1])-5))
 
-            # print("\n\nPress any key to continue:\n")
-            # m.getch()
+            print("\n\nPress any key to continue:")
+            m.getch()
 
         except:
             print("The file cannot be opened\n")
@@ -73,14 +74,14 @@ class Steganography:
 
         # Converts the ASCII to Binary and appends to msgBi list
         msgBi = list(msgLen)
-        # print(msgBi)
+        # print(len(msgBi))
         for i in range(len(msgAscii)):
             binaryVal = bin(msgAscii[i]).replace("0b","")       # Gets Binary of the numbers
 
             if len(binaryVal) < 8:
                 binaryVal = "0"*(8 - len(binaryVal)) + binaryVal    # padds to make 8 bits
             msgBi.append(binaryVal)
-        # print(msgBi)
+        # print(len(msgBi))
 
 
         # Divides the binary into 3 parts of 2:3:3 and stores in 3 different list
@@ -91,7 +92,7 @@ class Steganography:
 
         for y in range(self.img.size[1]):
             # Exit when the Original message length have been inserted
-            if i == len(msg):
+            if i == len(msgBi):
                 break
             # New List for every row of the img
             r.append([])
@@ -100,7 +101,7 @@ class Steganography:
 
             for x in range(self.img.size[0]):
                 # Exit when the Original message length have been inserted
-                if i == len(msg):
+                if i == len(msgBi):
                     break
 
                 # Append the bits into the specific sublists
@@ -110,23 +111,16 @@ class Steganography:
                 i += 1
 
 
-
-        print(msgBi)
-        # print(r)
-        # print(g)
-        # print(b)
-
-
         # Inserting the Bits into the pixels
         i = 0
         for y in range(self.img.size[1]):
             # Exit when the Original message length have been inserted
-            if i == len(msg):
+            if i == len(msgBi):
                 break
 
             for x in range(self.img.size[0]):
                 # Exit when the Original message length have been inserted
-                if i == len(msg):
+                if i == len(msgBi):
                     break
                 
 
@@ -147,10 +141,13 @@ class Steganography:
 
         self.img.save(os.path.dirname(__file__)+"\\"+"file.png")
         print("Image was saved at: "+str(os.path.dirname(__file__)+"\\"+"file.png"))
-        # self.img.show()
+        self.img.show()
         m.getch()
 
+    
+    # End of encode() -----------------------------------------------------------------------------------
 
+    
     def decode(self):
         # self.img.show()
 
@@ -160,7 +157,8 @@ class Steganography:
             temp = self.img.getpixel((i,0))
             msgLen = msgLen + bin(temp[0]).replace("0b","")[6:] + bin(temp[1]).replace("0b","")[5:] + bin(temp[2]).replace("0b","")[5:]
         length = int(msgLen,2)
-        # print(length)
+        length += 5
+        print("Message Length is "+str(length)+" chars")
 
         i = 0
         msg = list()
@@ -179,7 +177,7 @@ class Steganography:
 
         # Converts the 8 bits to Characters
         charAscii = [ chr(int(x,2)) for x in msg ]
-
+        # print(charAscii)
         # Output String
         op = ""
         for i in range(len(charAscii)):
@@ -187,14 +185,12 @@ class Steganography:
                 continue
             op = op + charAscii[i]
 
-        print(op)
+        print("Message: " + op)
 
             
 
+s = Steganography(input("Enter file name (with extension): "))
+s.encode(input("Enter a Message to Encode: "))
 
-
-s = Steganography("test.png")
-s.encode("Hellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo ThereHellqo Yoyoyoyoyoyo There")
-
-s = Steganography("file.png")
+s = Steganography(input("Enter File name (with Extension): "))
 s.decode()
