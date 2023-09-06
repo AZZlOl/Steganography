@@ -189,8 +189,8 @@ class Steganography:
 
             
 
-s = Steganography(input("Enter file name (with extension): "))
-s.encode(input("Enter a Message to Encode: "))
+# s = Steganography(input("Enter file name (with extension): "))
+# s.encode(input("Enter a Message to Encode: "))
 
 s = Steganography(input("Enter File name (with Extension): "))
 s.decode()
