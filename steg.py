@@ -158,7 +158,7 @@ class Steganography:
             msgLen = msgLen + bin(temp[0]).replace("0b","")[6:] + bin(temp[1]).replace("0b","")[5:] + bin(temp[2]).replace("0b","")[5:]
         length = int(msgLen,2)
         length += 5
-        print("Message Length is "+str(length)+" chars")
+        print("Message Length is "+str(length-5)+" chars")
 
         i = 0
         msg = list()
