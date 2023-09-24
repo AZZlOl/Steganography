@@ -6,6 +6,7 @@
 import os
 from PIL import Image
 import msvcrt as m
+import argparse
 
 
 class Steganography:
@@ -43,7 +44,7 @@ class Steganography:
 
     # End of __init__() -----------------------------------------------------------------------------------
 
-    def encode(self, msg = "Sample Message"):
+    def encode(self, msg = "Sample Message", output_file_name="encoded_image.png"):
         # Converts pixels in RGB VALS || use self.imgRGB.getpixel((x,y))
         # self.imgRGB = self.img.convert("RGB")
 
@@ -138,11 +139,15 @@ class Steganography:
                 # Append the bits into the specific sublists
                 i += 1
 
+        output_file_location = os.path.dirname(__file__)+"\\script_output\\"
 
-        self.img.save(os.path.dirname(__file__)+"\\"+"file.png")
-        print("Image was saved at: "+str(os.path.dirname(__file__)+"\\"+"file.png"))
-        self.img.show()
-        m.getch()
+        if not os.path.exists(output_file_location):
+            os.makedirs(output_file_location)
+
+        self.img.save(output_file_location + output_file_name)
+        print("Image was saved at: " + output_file_location + output_file_name)
+        # self.img.show()
+        # m.getch()
 
     
     # End of encode() -----------------------------------------------------------------------------------
@@ -192,5 +197,35 @@ class Steganography:
 # s = Steganography(input("Enter file name (with extension): "))
 # s.encode(input("Enter a Message to Encode: "))
 
-s = Steganography(input("Enter File name (with Extension): "))
-s.decode()
+# s = Steganography(input("Enter File name (with Extension): "))
+# s.decode()
+
+def cla_handler():
+    parser = argparse.ArgumentParser(description=" This script will embed data in an image")
+    parser.add_argument('mode', type=str, help="Takes 'e'ncode or 'd'ecode as input.")
+    parser.add_argument('file_location', type=str, help="Takes location of the image as input.")
+    parser.add_argument('--output_file_name', type=str, help="Takes the name of the output file.")
+    parser.add_argument('--msg', type=str, help="Only used when mode is 'e'.")
+
+    args = parser.parse_args()
+
+    mode = args.mode
+    msg = args.msg
+    file_location = args.file_location
+    output_file_name = args.output_file_name
+
+    if mode == 'e' or mode == 'd':
+        if mode == 'e':
+            s = Steganography(file_location)
+            s.encode(msg, output_file_name)
+        else:
+            s = Steganography(file_location)
+            s.decode()
+
+    else:
+        print("Invalid 'mode' selected. mode only takes 'e'ncode or 'd'ecode as input.")
+
+
+
+
+cla_handler()
