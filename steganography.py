@@ -24,21 +24,22 @@ class Steganography:
         self.fileLoc = os.path.dirname(__file__) + "\\" + self.fileName
 
         try:
+            # print(self.fileLoc)
             # Opens and displays stats for the img
             self.img = Image.open(self.fileLoc)
-            print("Image was opened successfully...\n")
-            print(":-: Image Stats :-:\n")
+            # print("Image was opened successfully...\n")
+            # print(":-: Image Stats :-:\n")
 
-            print("Size: {:.2f}".format( os.stat(self.fileLoc).st_size / (1024*1024) ) + "MBs")
-            print("Format: " + self.img.format)
-            print("Resolution: " + str(self.img.size[0]) + " x " + str(self.img.size[1]))
-            print("Total Characters that can be encoded: " + str((self.img.size[0]*self.img.size[1])-5))
+            # print("Size: {:.2f}".format( os.stat(self.fileLoc).st_size / (1024*1024) ) + "MBs")
+            # print("Format: " + self.img.format)
+            # print("Resolution: " + str(self.img.size[0]) + " x " + str(self.img.size[1]))
+            # print("Total Characters that can be encoded: " + str((self.img.size[0]*self.img.size[1])-5))
 
             # print("\n\nPress any key to continue:")
             # m.getch()
 
         except:
-            print("The file cannot be opened\n")
+            print("Python Script Exception: The file cannot be opened\n")
             exit()
 
     # End of __init__() -----------------------------------------------------------------------------------
@@ -144,7 +145,7 @@ class Steganography:
             os.makedirs(output_file_location)
 
         self.img.save(output_file_location + output_file_name)
-        print("Image was saved at: " + output_file_location + output_file_name)
+        # print("Image was saved at: " + output_file_location + output_file_name)
         # self.img.show()
         # m.getch()
 
@@ -162,7 +163,7 @@ class Steganography:
             msgLen = msgLen + bin(temp[0]).replace("0b","")[6:] + bin(temp[1]).replace("0b","")[5:] + bin(temp[2]).replace("0b","")[5:]
         length = int(msgLen,2)
         length += 5
-        print("Message Length is "+str(length-5)+" chars")
+        # print("Message Length is "+str(length-5)+" chars")
 
         i = 0
         msg = list()
@@ -176,18 +177,23 @@ class Steganography:
                 msg.append(bin(pixel[0]).replace("0b","")[6:] + bin(pixel[1]).replace("0b","")[5:] + bin(pixel[2]).replace("0b","")[5:])
                 i+=1
         # print(msg)
+        print("here")
         
         
 
         # Converts the 8 bits to Characters
         charAscii = [ chr(int(x,2)) for x in msg ]
         # print(charAscii)
+        
+        print("here")
         # Output String
         op = ""
         for i in range(len(charAscii)):
             if i < 5:
                 continue
             op = op + charAscii[i]
+            
+        print("here")
 
         print("Message: " + op)
 

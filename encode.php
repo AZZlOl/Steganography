@@ -44,7 +44,7 @@
                         </div>
 
                     </div>
-                    <div class="card-footer text-right"><input type="submit" name='encode' value='encode' class='btn btn-primary' onclick="">Upload</div>
+                    <div class="card-footer text-right"><input type="submit" name='encode' value='encode' class='btn btn-primary'></div>
 
 
                 </form>

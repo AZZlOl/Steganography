@@ -9,6 +9,49 @@ if (isset($_POST['encode'])) {
         mkdir($uploadDir, 0777, true);
     }
 
+    $fileName = str_replace(" ","",$_FILES['image']['name']);
+    echo "Modifies Image Name (removed whitespace): ".$fileName."<br>";
+    $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION); // Get the file extension
+
+    $uploadFile = $uploadDir . $fileName;
+
+    if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
+        // Image uploaded successfully
+        $date = date_create();
+        $output_file_name = date_timestamp_get($date);
+        $output_file_name = $output_file_name . '.' . $fileExtension;
+        
+        // Sanitize user input (message) and escape it for shell execution
+        $message = str_replace(" ",".",$message);
+        $sanitizedMessage = escapeshellarg($message);
+
+        // Define the full path to the Python executable
+        $pythonExecutable = 'C:\OtherPrograms\py3_11_2\python.exe';
+        // $file_location = realpath("uploaded_images/{$fileName}");
+        $file_location = "uploaded_images/{$fileName}";
+
+        // Construct the shell command
+        $command = "$pythonExecutable steganography.py e $file_location --output_file_name $output_file_name --msg $sanitizedMessage 2>&1";
+        
+        "<br>";
+        // Execute the shell command and capture the output
+        // $output = shell_exec($command);
+        system($command, $output);
+
+        // Output the result
+        // echo "$output";
+    } else {
+        echo "<h1>Error..!</h1>";
+    }
+}
+elseif (isset($_POST['decode'])) {
+    $uploadDir = 'uploaded_images/'; // Directory to save the uploaded image
+
+    // Check if the directory exists; if not, create it
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+
     $fileName = $_FILES['image']['name'];
     $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION); // Get the file extension
 
@@ -19,21 +62,18 @@ if (isset($_POST['encode'])) {
         $date = date_create();
         $output_file_name = date_timestamp_get($date);
         $output_file_name = $output_file_name . '.' . $fileExtension;
-        
-        // Sanitize user input (message) and escape it for shell execution
-        $sanitizedMessage = escapeshellarg($message);
 
         // Define the full path to the Python executable
         $pythonExecutable = 'C:\OtherPrograms\py3_11_2\python.exe';
 
         // Construct the shell command
-        $command = "$pythonExecutable steganography.py e uploaded_images\\{$_FILES['image']['name']} --output_file_name $output_file_name --msg $sanitizedMessage";
+        $command = "$pythonExecutable steganography.py d uploaded_images\\{$_FILES['image']['name']}";
 
         // Execute the shell command and capture the output
         $output = shell_exec($command);
 
         // Output the result
-        echo "Output: $output";
+        // echo "Encoded Message: $output";
     } else {
         echo "<h1>Error..!</h1>";
     }
@@ -68,8 +108,16 @@ if (isset($_POST['encode'])) {
             if(isset($_POST['encode'])){
                 ?>
                     <div class="col-md-6">
-                        <img class="text-center" src="encoded_images\\<?php echo $output_file_name; ?>" alt="Encoded Image" style='width: 800px;'>
-                        <a href="encoded_images\\<?php echo $output_file_name; ?>">Click here to download the Encoded Image.</a>
+                        <img class="text-center" src="encoded_images\<?php echo $output_file_name; ?>" alt="Encoded Image" style='width: 800px;'>
+                        <a href="encoded_images\<?php echo $output_file_name; ?>">Click here to download the Encoded Image.</a>
+                    </div>
+                <?php
+            }
+            elseif(isset($_POST['decode'])){
+                ?>
+                    <div class="col-md-6">
+                        
+                        <p>Encoded Message: <?php echo $output; ?></p>
                     </div>
                 <?php
             }
