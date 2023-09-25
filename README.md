@@ -37,8 +37,9 @@ This web application consists of multiple PHP and Python files that work togethe
 
 1. **Running the Application:**
 
-   - Host the web application on a web server with PHP support.
-   - Place the PHP and HTML files in the web server's root directory.
+   - Place the folder in <XAMPPInstallation>\htdocs\<folderName>
+   - Make sure python is installed and the path to python.exe is changed in 'delivery.php'.
+   - Install PIL / Pillow library. (python -m pip install pillow)
 
 2. **Accessing the Application:**
 
