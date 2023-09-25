@@ -10,7 +10,7 @@ if (isset($_POST['encode'])) {
     }
 
     $fileName = str_replace(" ","",$_FILES['image']['name']);
-    echo "Modifies Image Name (removed whitespace): ".$fileName."<br>";
+    echo "Modified Image Name (removed whitespace): ".$fileName."<br>";
     $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION); // Get the file extension
 
     $uploadFile = $uploadDir . $fileName;
@@ -22,7 +22,6 @@ if (isset($_POST['encode'])) {
         $output_file_name = $output_file_name . '.' . $fileExtension;
         
         // Sanitize user input (message) and escape it for shell execution
-        $message = str_replace(" ",".",$message);
         $sanitizedMessage = escapeshellarg($message);
 
         // Define the full path to the Python executable
@@ -44,7 +43,7 @@ if (isset($_POST['encode'])) {
         echo "<h1>Error..!</h1>";
     }
 }
-elseif (isset($_POST['decode'])) {
+elseif(isset($_POST['decode'])) {
     $uploadDir = 'uploaded_images/'; // Directory to save the uploaded image
 
     // Check if the directory exists; if not, create it
@@ -52,10 +51,11 @@ elseif (isset($_POST['decode'])) {
         mkdir($uploadDir, 0777, true);
     }
 
-    $fileName = $_FILES['image']['name'];
+    $fileName = str_replace(" ","",$_FILES['image']['name']);
+    echo "Modified Image Name (removed whitespace): ".$fileName."<br>";
     $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION); // Get the file extension
 
-    $uploadFile = $uploadDir . $_FILES['image']['name'];
+    $uploadFile = $uploadDir . $fileName;
 
     if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
         // Image uploaded successfully
@@ -65,15 +65,19 @@ elseif (isset($_POST['decode'])) {
 
         // Define the full path to the Python executable
         $pythonExecutable = 'C:\OtherPrograms\py3_11_2\python.exe';
+        // $file_location = realpath("uploaded_images/{$fileName}");
+        $file_location = "uploaded_images/{$fileName}";
 
         // Construct the shell command
-        $command = "$pythonExecutable steganography.py d uploaded_images\\{$_FILES['image']['name']}";
-
+        $command = "$pythonExecutable steganography.py d $file_location 2>&1";
+        
+        "<br>";
         // Execute the shell command and capture the output
-        $output = shell_exec($command);
+        // $output = shell_exec($command);
+        system($command, $output);
 
         // Output the result
-        // echo "Encoded Message: $output";
+        // echo "$output";
     } else {
         echo "<h1>Error..!</h1>";
     }
@@ -116,8 +120,10 @@ elseif (isset($_POST['decode'])) {
             elseif(isset($_POST['decode'])){
                 ?>
                     <div class="col-md-6">
-                        
-                        <p>Encoded Message: <?php echo $output; ?></p>
+                        <br>
+                        <br>
+                        <br>
+                        <!-- <p>Encoded Message: <?php echo $output; ?></p> -->
                     </div>
                 <?php
             }

@@ -177,7 +177,6 @@ class Steganography:
                 msg.append(bin(pixel[0]).replace("0b","")[6:] + bin(pixel[1]).replace("0b","")[5:] + bin(pixel[2]).replace("0b","")[5:])
                 i+=1
         # print(msg)
-        print("here")
         
         
 
@@ -185,7 +184,6 @@ class Steganography:
         charAscii = [ chr(int(x,2)) for x in msg ]
         # print(charAscii)
         
-        print("here")
         # Output String
         op = ""
         for i in range(len(charAscii)):
@@ -193,9 +191,9 @@ class Steganography:
                 continue
             op = op + charAscii[i]
             
-        print("here")
 
-        print("Message: " + op)
+        # print("Message: " + op)
+        print(op)
 
             
 
