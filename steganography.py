@@ -10,16 +10,11 @@ import argparse
 
 
 class Steganography:
-    def __init__(self, fileName = "sample.jpeg"):
+    def __init__(self, fileName):
         
         os.system('cls')
 
         self.fileName = fileName
-        
-        # If No File name is given, then take sample.jpg
-        if self.fileName == "sample.jpeg":
-            print("Sample file is being used. File Name: \"sample.jpeg\"")
-        
         # Makes absolute URL for the file
         self.fileLoc = os.path.dirname(__file__) + "\\" + self.fileName
 
