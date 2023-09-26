@@ -17,8 +17,7 @@ if (isset($_POST['encode'])) {
 
     if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
         // Image uploaded successfully
-        $date = date_create();
-        $output_file_name = date_timestamp_get($date);
+        $output_file_name = trim(com_create_guid(), '{}');
         $output_file_name = $output_file_name . '.' . $fileExtension;
         
         // Sanitize user input (message) and escape it for shell execution
@@ -59,8 +58,7 @@ elseif(isset($_POST['decode'])) {
 
     if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
         // Image uploaded successfully
-        $date = date_create();
-        $output_file_name = date_timestamp_get($date);
+        $output_file_name = trim(com_create_guid(), '{}');
         $output_file_name = $output_file_name . '.' . $fileExtension;
 
         // Define the full path to the Python executable
@@ -113,7 +111,7 @@ elseif(isset($_POST['decode'])) {
                 ?>
                     <div class="col-md-6">
                         <img class="text-center" src="encoded_images\<?php echo $output_file_name; ?>" alt="Encoded Image" style='width: 800px;'>
-                        <a href="encoded_images\<?php echo $output_file_name; ?>">Click here to download the Encoded Image.</a>
+                        <a href="encoded_images\<?php echo $output_file_name; ?>" download>Click here to download the Encoded Image.</a>
                     </div>
                 <?php
             }
