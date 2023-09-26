@@ -65,11 +65,6 @@ This web application consists of multiple PHP and Python files that work togethe
 
 ## Configuration
 
-- Ensure that the path to the Python executable (`python.exe`) in `steganography.py` is correctly set.
-- Configure the `steganography.py` script as needed for your steganography requirements.
-
-## Author
-
-- Sreyas Cheeran Velikoth
-
-Feel free to modify and enhance this web application for your specific use case.
+- Ensure that the path to the Python executable (`python.exe`) in `deliver.php` is correctly set.
+- Install PIL / Pillow (python -m pip install pillow)
+- Place the files in a folder inside htdocs of xampp install directory. (%XAMPP_Install%/htdocs/<folderName>/<copy the files here>)
