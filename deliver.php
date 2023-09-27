@@ -10,7 +10,6 @@ if (isset($_POST['encode'])) {
     }
 
     $fileName = str_replace(" ","",$_FILES['image']['name']);
-    echo "Modified Image Name (removed whitespace): ".$fileName."<br>";
     $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION); // Get the file extension
 
     $uploadFile = $uploadDir . $fileName;
@@ -51,7 +50,7 @@ elseif(isset($_POST['decode'])) {
     }
 
     $fileName = str_replace(" ","",$_FILES['image']['name']);
-    echo "Modified Image Name (removed whitespace): ".$fileName."<br>";
+    echo "File Name: ".$fileName."<br>";
     $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION); // Get the file extension
 
     $uploadFile = $uploadDir . $fileName;
@@ -110,8 +109,9 @@ elseif(isset($_POST['decode'])) {
             if(isset($_POST['encode'])){
                 ?>
                     <div class="col-md-6">
-                        <img class="text-center" src="encoded_images\<?php echo $output_file_name; ?>" alt="Encoded Image" style='width: 800px;'>
+                        <img class="text-center" src="encoded_images\<?php echo $output_file_name; ?>" alt="Encoded Image" style='width: 600px;'>
                         <a href="encoded_images\<?php echo $output_file_name; ?>" download>Click here to download the Encoded Image.</a>
+                        <p>File Name: <?php echo $output_file_name; ?></p>
                     </div>
                 <?php
             }
