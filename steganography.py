@@ -15,13 +15,25 @@ class Steganography:
         os.system('cls')
 
         self.fileName = fileName
+        fileNameNoExt = fileName.split(".")[0]
         # Makes absolute URL for the file
         self.fileLoc = os.path.dirname(__file__) + "\\" + self.fileName
+        self.fileLocPNG = os.path.dirname(__file__) + "\\" + fileNameNoExt + ".png"
 
         try:
             # print(self.fileLoc)
             # Opens and displays stats for the img
-            self.img = Image.open(self.fileLoc)
+            # self.img = Image.open(self.fileLoc)
+
+            imgOri = Image.open(self.fileLoc)
+            imgOri.save(self.fileLocPNG, "PNG")
+            self.img = Image.open(self.fileLocPNG)
+            print(self.img.format)
+
+
+
+
+
             # print("Image was opened successfully...\n")
             # print(":-: Image Stats :-:\n")
 
