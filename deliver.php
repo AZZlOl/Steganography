@@ -13,11 +13,12 @@ if (isset($_POST['encode'])) {
     $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION); // Get the file extension
 
     $uploadFile = $uploadDir . $fileName;
+    
+    $file_name_guid = trim(com_create_guid(), '{}');
+    $output_file_name_PNG = $file_name_guid . '.png';
 
     if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
         // Image uploaded successfully
-        $output_file_name = trim(com_create_guid(), '{}');
-        $output_file_name = $output_file_name . '.' . $fileExtension;
         
         // Sanitize user input (message) and escape it for shell execution
         $sanitizedMessage = escapeshellarg($message);
@@ -28,7 +29,7 @@ if (isset($_POST['encode'])) {
         $file_location = "uploaded_images/{$fileName}";
 
         // Construct the shell command
-        $command = "$pythonExecutable steganography.py e $file_location --output_file_name $output_file_name --msg $sanitizedMessage 2>&1";
+        $command = "$pythonExecutable steganography.py e $file_location --output_file_name $output_file_name_PNG --msg $sanitizedMessage 2>&1";
         
         "<br>";
         // Execute the shell command and capture the output
@@ -109,9 +110,9 @@ elseif(isset($_POST['decode'])) {
             if(isset($_POST['encode'])){
                 ?>
                     <div class="col-md-6">
-                        <img class="text-center" src="encoded_images\<?php echo $output_file_name; ?>" alt="Encoded Image" style='width: 600px;'>
-                        <a href="encoded_images\<?php echo $output_file_name; ?>" download>Click here to download the Encoded Image.</a>
-                        <p>File Name: <?php echo $output_file_name; ?></p>
+                        <img class="text-center" src="encoded_images\<?php echo $output_file_name_PNG; ?>" alt="Encoded Image" style='width: 600px;'>
+                        <a href="encoded_images\<?php echo $output_file_name_PNG; ?>" download>Click here to download the Encoded Image.</a>
+                        <p>File Name: <?php echo $output_file_name_PNG; ?></p>
                     </div>
                 <?php
             }
