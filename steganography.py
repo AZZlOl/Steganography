@@ -51,7 +51,7 @@ class Steganography:
 
     # End of __init__() -----------------------------------------------------------------------------------
 
-    def encode(self, msg = "Sample Message", output_file_name="encoded_image.png"):
+    def encode(self, msg, output_file_name):
         # Converts pixels in RGB VALS || use self.imgRGB.getpixel((x,y))
         # self.imgRGB = self.img.convert("RGB")
 
